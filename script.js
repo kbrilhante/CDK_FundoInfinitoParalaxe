@@ -1,9 +1,12 @@
-let imgFundo, imgGainha;
-let gainha, fundo;
-const VEL = 6;
+let imgGainha, imgCamadas;
+let gainha, camadas;
+const VEL = 0.8;
 
 function preload() {
-    imgFundo = loadImage("./assets/platformer_background_3.png");
+    imgCamadas = [];
+    for (let i = 1; i <= 9; i++) {
+        imgCamadas.unshift(loadImage("./assets/bg/layer0" + i + ".png"));
+    }
     imgGainha = [];
     for (let i = 1; i <= 4; i++) {
         let ibagem = loadImage("./assets/gainha/frame-" + i + ".png");
@@ -13,23 +16,19 @@ function preload() {
 
 function setup() {
     createCanvas(900, 506);
-    
-    fundo = [];
-    for (let i = 0; i < 3; i++) {
-        fundo.push(new Fundo(imgFundo, VEL, i * width ));
+    camadas = [];
+    for (let i = 0; i < imgCamadas.length; i++) {
+        let qtd = i == 0 ? 1 : 3;
+        let vel = i == 4 ? 0 : i * VEL;
+        camadas.push(new Camada(imgCamadas[i], vel, qtd));
     }
-
     gainha = new Gainha(imgGainha);
 }
 
 function draw() {
-    for (let i = fundo.length - 1; i >= 0; i--) {
-        fundo[i].show();
-        if (fundo[i].move()) {
-            let posX = fundo[fundo.length - 1].x + width;
-            fundo.push(new Fundo(imgFundo, VEL, posX));
-            fundo.shift();
-        }
+    background("hotpink");
+    for (let i = 0; i < camadas.length; i++) {
+        camadas[i].show();
     }
     gainha.show();
 }
